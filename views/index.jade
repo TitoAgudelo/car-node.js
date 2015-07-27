@@ -1,16 +1,6 @@
 extends layout
-  
 block content
-    h1= title
-        Products List
-    ul
-        each product, i in productlist
-            li
-                a(href="mailto:#{product.name}")= user.name
-                span
-                	{product.price}
-
-
-  <script>
-	  var socket = io();
-  </script>
+	h1 title
+	#model
+		for product in model
+			include product

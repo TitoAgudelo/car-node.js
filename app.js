@@ -5,8 +5,6 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
-  , mongoose = require('mongoose')
   , stylus = require('stylus')
   , nib = require('nib')
   , http = require('http')
@@ -17,6 +15,7 @@ var express = require('express')
 
 
 // Mongo
+var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
@@ -26,10 +25,22 @@ var ProductSchema = new Schema({
 	amount: { type: Number }
 });
 
-var db = mongoose.connect('mongodb://localhost/products')
-	, model = mongoose.model('Data', ProductSchema)
-	, Data = mongoose.model('Data')
-;
+var db = mongoose.connect('mongodb://localhost/test');
+var Model = mongoose.model('Data', ProductSchema);
+var Data = mongoose.model('Data');
+
+// CRUD create
+Model.create(
+  {
+    name: 'Product 2', 
+    price: 50, 
+    amount: 50
+  }, 
+  function(err, model){
+    if(err) console.log(err);
+    else console.log(model);
+});
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -42,7 +53,7 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
+//development only
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
 });
@@ -51,31 +62,24 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
-// IO
+// Routes
 
-var products = {};
-
-io.sockets.on('connection', function (socket) {
-
-  socket.on('handle', function (data) {
-    Data.findById(data.obj[0], function(err, p) {
-      p.x=data.obj[1];
-      p.y=data.obj[2];
-      p.save();
-    });
-    socket.broadcast.emit('handle', data);
+app.get('/', function (req, res, next) {
+  Model.find( function(err, model){
+    if(err) res.send(err);
+    res.render('index', model);
   });
+});
 
-  socket.on('disconnect', function(){
-    //mongoose.disconnect();
-    delete users[socket.user];
-    io.sockets.emit('update', users);
+app.get('/products/:id', function (req, res, next) {
+  Model.findById(req.params.id, function(err, model){
+    if(err) res.send(err);
+    res.json(model);
   });
-
 });
 
 // Routes
-app.get('/', routes.index);
+//app.get('/', routes.index);
 
 app.listen(3000);
 console.log('Express server listening on port ' + app.get('port'));
