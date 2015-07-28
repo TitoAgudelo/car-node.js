@@ -5,6 +5,8 @@ block content
 		.row
 			.col-md-3.col-md-offset-3
 				h1 Cart Node.JS
+			.col-md-3
+				include cart
 		.row
 			.legend
 				span.col-sm-1 Name
@@ -16,4 +18,5 @@ block content
 					span.col-sm-1= product.name
 					span.col-sm-1= product.price
 					span.col-sm-1= product.amount
+					span.col-sm-1= product.inCart
 					button.btn.btn-success.col-sm-1 Buy

@@ -22,7 +22,8 @@ var Schema = mongoose.Schema;
 var ProductSchema = new Schema({
 	name  : { type: String },
 	price : { type: Number },
-	amount: { type: Number }
+	amount: { type: Number },
+  inCart: { type: Boolean }
 });
 
 var db = mongoose.connect('mongodb://localhost/test');
@@ -32,9 +33,10 @@ var Data = mongoose.model('Data');
 // CRUD create
 Model.create(
   {
-    name: 'Product 2', 
+    name: 'Product 3', 
     price: 50, 
-    amount: 50
+    amount: 50,
+    inCart: false
   }, 
   function(err, model){
     if(err) console.log(err);
@@ -63,14 +65,15 @@ app.configure('production', function(){
 });
 
 // Routes
-
+/* get all products */
 app.get('/', function (req, res, next) {
   Model.find( function(err, model){
     if(err) res.send(err);
-    res.render('index', { products: model, title: 'home'});
-  });
+    res.render('index', { products: model });
+  }).where('inCart').equals(false);
 });
 
+/* get one product by id */
 app.get('/products/:id', function (req, res, next) {
   Model.findById(req.params.id, function(err, model){
     if(err) res.send(err);
@@ -78,8 +81,22 @@ app.get('/products/:id', function (req, res, next) {
   });
 });
 
-// Routes
-//app.get('/', routes.index);
+/* put product to sent to cart option */
+app.put('/:id', function(req, res, next) {
+  var query = { _id: req.params.id };
+  var callback =  function() {
+      Model.find( function(err, model) {
+        if(err) res.send(err);
+        res.render('cart', { products: model, title: 'cart'});
+      }).where('inCart').equals('true');
+  };
+  Model.findOneAndUpdate(query, { $set: { inCart: true }}, callback);
+  // Model.findByIdAndUpdate(req.params.id, req.body, function (err, model) {
+  //   if (err) return next(err);
+  //   res.json(model);
+  // });
+});
+
 
 app.listen(3000);
 console.log('Express server listening on port ' + app.get('port'));
