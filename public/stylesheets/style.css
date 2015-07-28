@@ -13,3 +13,24 @@ a {
     height: 100%;
     width: 100%;
 }
+
+#cart {
+	padding: 10px;
+	display: inline-block;
+	background-color: #D96055;
+	margin-top: 20px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#cart span {
+	padding: 0 10px;
+	color: white;
+}
+
+#cart span#count {
+	background-color: #3498BF;
+    border-radius: 50%;
+    padding: 5px;
+}

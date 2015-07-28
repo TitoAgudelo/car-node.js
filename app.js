@@ -69,7 +69,7 @@ app.configure('production', function(){
 app.get('/', function (req, res, next) {
   Model.find( function(err, model){
     if(err) res.send(err);
-    res.render('index', { products: model });
+    res.render('index', { products: model, max: model.length });
   }).where('inCart').equals(false);
 });
 
@@ -87,7 +87,7 @@ app.put('/:id', function(req, res, next) {
   var callback =  function() {
       Model.find( function(err, model) {
         if(err) res.send(err);
-        res.render('cart', { products: model, title: 'cart'});
+        res.render('cart', { products: model, max: model});
       }).where('inCart').equals('true');
   };
   Model.findOneAndUpdate(query, { $set: { inCart: true }}, callback);
