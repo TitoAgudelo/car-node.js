@@ -1,6 +1,19 @@
 extends layout
+
 block content
-	h1 title
-	#model
-		for product in model
-			include product
+	.container
+		.row
+			.col-md-3.col-md-offset-3
+				h1 Cart Node.JS
+		.row
+			.legend
+				span.col-sm-1 Name
+				span.col-sm-1 Price
+				span.col-sm-1 amount
+		.row
+			for product in products
+				.product.row
+					span.col-sm-1= product.name
+					span.col-sm-1= product.price
+					span.col-sm-1= product.amount
+					button.btn.btn-success.col-sm-1 Buy

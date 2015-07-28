@@ -67,7 +67,7 @@ app.configure('production', function(){
 app.get('/', function (req, res, next) {
   Model.find( function(err, model){
     if(err) res.send(err);
-    res.render('index', model);
+    res.render('index', { products: model, title: 'home'});
   });
 });
 
